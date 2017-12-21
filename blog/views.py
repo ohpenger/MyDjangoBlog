@@ -4,12 +4,22 @@ import markdown
 import pygments
 from comments.forms import CommentForm
 from comments.models import Comments
+from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 # Create your views here.
 def index(request):
     post_list=Post.objects.all()
-    return render(request,'blog/index.html',context={'post_list':post_list})
+    paginator = Paginator(post_list, 3)
+    page = request.GET.get('page')
+    try:
+        contacts = paginator.page(page)
+    except PageNotAnInteger:
+        contacts = paginator.page(1)
+    except EmptyPage:
+        contacts = paginator.page(paginator.num_pages)
+    return render(request, 'blog/index.html', context={'contacts': contacts})
 def detail(request,pk):
     post=get_object_or_404(Post,pk=pk)
+    post.increase_views()
     post.body=markdown.markdown(post.body,
                                 extensions=[
                                     'markdown.extensions.extra',
@@ -25,8 +35,24 @@ def detail(request,pk):
     return render(request,'blog/detail.html',context=context)
 def archives(request,year,month):
     post_list=Post.objects.filter(created_time__year=year,created_time__month=month)
-    return render(request,'blog/index.html',context={'post_list':post_list})
+    paginator = Paginator(post_list, 3)
+    page = request.GET.get('page')
+    try:
+        contacts = paginator.page(page)
+    except PageNotAnInteger:
+        contacts = paginator.page(1)
+    except EmptyPage:
+        contacts = paginator.page(paginator.num_pages)
+    return render(request, 'blog/index.html', context={'contacts': contacts})
 def catagory(request,pk):
     cate=get_object_or_404(Category,pk=pk)
     post_list=Post.objects.filter(category=cate)
-    return render(request,'blog/index.html',context={'post_list':post_list})
+    paginator = Paginator(post_list, 3)
+    page = request.GET.get('page')
+    try:
+        contacts = paginator.page(page)
+    except PageNotAnInteger:
+        contacts = paginator.page(1)
+    except EmptyPage:
+        contacts = paginator.page(paginator.num_pages)
+    return render(request, 'blog/index.html', context={'contacts': contacts})

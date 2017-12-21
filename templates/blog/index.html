@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
+{% load blog_tags %}
 {% block main %}
-{% for post in post_list %}
+                {% for post in contacts %}
                     <article class="post post-{{ post.pk }}">
                         <h1 class="entry-title"><a href="{{ post.get_absolute_url }}" >{{ post.title }}</a></h1>
                         <div class="entry-meta">
@@ -8,11 +9,11 @@
                             <span class="post-date"><a href="#"><time class="entry-date" datetime="{{ post.created_time }}">{{ post.created_time }}</time></a> </span>
                             <span class="post-author"><a href="#">{{ post.author }}</a> </span>
                             <span class="comments-link"><a href="#">评论</a> </span>
-                            <span class="views-count"><a href="#">阅读</a></span>
+                            <span class="views-count"><a href="{{ post.get_absolute_url }}">{{ post.views }}阅读</a></span>
                         </div>
                         <div class="entry-content">
-                            <p>{{ post.excerpt }}</p>
                             <div class="read-more c1-effect-14">
+                                <p>{{ post.excerpt}}</p>
                                 <a href="{{ post.get_absolute_url }}" class="more-link">继续阅读<span class="meta-nav">→</span></a>
                             </div>
                         </div>
@@ -20,26 +21,28 @@
                 {% empty %}
                     <div class="no-post">暂时还没有要发布的文章</div>
                 {% endfor %}
-                <!-- 简单分页效果
                 <div class="pagination-simple">
-                    <a href="#">上一页</a>
-                    <span class="current">第 6 页 / 共 11 页</span>
-                    <a href="#">下一页</a>
+                {% if contacts.paginator %}
+                    {% if contacts.has_previous %}
+                    <a href="?page={{contacts.previous_page_number }}">上一页</a>
+                    {% endif %}
+
+                    {% for num in contacts.paginator.page_range  %}
+                            {% circle_page contacts.number num %}
+                    {% endfor %}
+
+                    {% if contacts.has_next %}
+                    <a href="?page={{ contacts.next_page_number }}">下一页</a>
+
+                    {% endif %}
+                    <span class="current">第{{ contacts.number }}页/共{{ contacts.paginator.num_pages }}页</span>
+                    <form action="" method="" class="">
+                    <input name="page" type="text">
+                    <input class="button" type="submit" value="跳转">
+                    </form>
+                {% endif %}
                 </div>
-                -->
-                <div class="pagination">
-                    <ul>
-                        <li><a href="">1</a></li>
-                        <li><a href="">...</a></li>
-                        <li><a href="">4</a></li>
-                        <li><a href="">5</a></li>
-                        <li class="current"><a href="">6</a></li>
-                        <li><a href="">7</a></li>
-                        <li><a href="">8</a></li>
-                        <li><a href="">...</a></li>
-                        <li><a href="">11</a></li>
-                    </ul>
-                </div>
+
 {% endblock main %}
 {% block toc %}
 {% endblock toc %}
