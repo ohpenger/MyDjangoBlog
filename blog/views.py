@@ -1,10 +1,11 @@
 from django.shortcuts import render,get_object_or_404
-from .models import Post,Category
+from .models import Post,Category,Tag
 import markdown
 import pygments
 from comments.forms import CommentForm
 from comments.models import Comments
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
+from django.db.models import Q
 # Create your views here.
 def index(request):
     post_list=Post.objects.all()
@@ -47,6 +48,34 @@ def archives(request,year,month):
 def catagory(request,pk):
     cate=get_object_or_404(Category,pk=pk)
     post_list=Post.objects.filter(category=cate)
+    paginator = Paginator(post_list, 3)
+    page = request.GET.get('page')
+    try:
+        contacts = paginator.page(page)
+    except PageNotAnInteger:
+        contacts = paginator.page(1)
+    except EmptyPage:
+        contacts = paginator.page(paginator.num_pages)
+    return render(request, 'blog/index.html', context={'contacts': contacts})
+def tag(request,pk):
+    atag=get_object_or_404(Tag,pk=pk)
+    post_list=atag.post_set.all()
+    paginator = Paginator(post_list, 3)
+    page = request.GET.get('page')
+    try:
+        contacts = paginator.page(page)
+    except PageNotAnInteger:
+        contacts = paginator.page(1)
+    except EmptyPage:
+        contacts = paginator.page(paginator.num_pages)
+    return render(request, 'blog/index.html', context={'contacts': contacts})
+def serch(request):
+    q=request.GET.get('q')
+    error_msg=''
+    if not q:
+        error_msg = '请输入关键词'
+        return render(request,'blog/index.html',{'error_msg':error_msg})
+    post_list =Post.objects.filter(Q(title__icontains=q) | Q(body__icontains=q))
     paginator = Paginator(post_list, 3)
     page = request.GET.get('page')
     try:

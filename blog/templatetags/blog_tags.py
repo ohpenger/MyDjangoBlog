@@ -1,6 +1,7 @@
 from django import template
-from ..models import Post,Category
+from ..models import Post,Category,Tag
 from django.utils.html import format_html
+from django.db.models.aggregates import Count
 register=template.Library()
 @register.simple_tag
 def get_recent_post(num=5):
@@ -10,7 +11,10 @@ def archives():
     return Post.objects.dates('created_time','month',order='DESC')
 @register.simple_tag
 def get_categorys():
-    return Category.objects.all()
+    return Category.objects.annotate(num_posts=Count('post')).filter(num_posts__gt=0)
+@register.simple_tag
+def get_tags():
+    return Tag.objects.annotate(num_posts=Count('post')).filter(num_posts__gt=0)
 @register.simple_tag
 def circle_page(current_page,loop_page):
     offset=abs(current_page-loop_page)

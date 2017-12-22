@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% load blog_tags %}
 {% block main %}
+    {% if error_msg %}
+    <script type="text/javascript">alert("{{ error_msg }}")</script>
+    {% endif %}
                 {% for post in contacts %}
                     <article class="post post-{{ post.pk }}">
                         <h1 class="entry-title"><a href="{{ post.get_absolute_url }}" >{{ post.title }}</a></h1>
