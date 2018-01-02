@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -23,9 +22,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '5anf1f1=tzsc#5cwruqmq!rn*!z(m5)f=80j%pw74m+zvk6h)_'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1','localhost','.lovewhisper','120.79.73.133']
+ALLOWED_HOSTS = ['127.0.0.1','localhost','.slightwhisper.top','120.79.73.133']
 
 
 # Application definition
@@ -121,11 +120,11 @@ USE_TZ = True
 
 HAYSTACK_CONNECTIONS = {
     'default': {
-        'ENGINE': 'blog.whoosh_cn_backend.WhooshEngine',
+        'ENGINE': 'blog.whoosh_cn_backends.WhooshEngine',
         'PATH': os.path.join(BASE_DIR, 'whoosh_index'),
     },
 }
-HAYSTACK_SEARCH_RESULTS_PER_PAGE = 3
+HAYSTACK_SEARCH_RESULTS_PER_PAGE = 10
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
